@@ -4,8 +4,8 @@ const render = (tab) => {
     for (const task of tab) {
 
         htmlString += `
-    <li>
-    ${task.content}
+    <li${task.done ? " style=\"text-decoration: line-through\"" : ""}>
+        ${task.content}
     </li>
     `;
     }
@@ -13,14 +13,30 @@ const render = (tab) => {
 }
 
 const init = () => {
-    const taskList = [
+    const tasksList = [
         {
             content: "Przeczytaj!",
-            done: true
+            done: true,
+        },
+        {
+            content: "Ustaw bloczki",
+            done: false,
         },
     ];
 
-    render(taskList);
+    render(tasksList);
+
+    const form = document.querySelector(".js-form");
+
+    form.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const newTaskContent = document.querySelector(".js-newTask").value.trim();
+        if (newTaskContent === "") return;
+        tasksList.push({ content: newTaskContent, });
+
+        render(tasksList);
+    })
+
 };
 
 init();
