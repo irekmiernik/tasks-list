@@ -1,73 +1,60 @@
-{
-    const deleteTasks = (tab) => {
-        const deleteButtons = document.querySelectorAll(".js-deleteTask");
-
-        deleteButtons.forEach((deleteTask, index) => {
-            deleteTask.addEventListener("click", () => {
-                tab.splice(index, 1);
-                render(tab);
-            });
-        });
-    }
-
-    const toggleDoneTaksButton = (tab) => {
-        const doneButtons = document.querySelectorAll(".js-doneTask");
-
-        doneButtons.forEach((doneTask, index) => {
-            doneTask.addEventListener("click", () => {
-                tab[index].done = !tab[index].done;
-                render(tab);
-            });
-        });
-    }
-
-    const render = (tab) => {
+(() => {
+    const renderTasksList = (table) => {
         let htmlString = "";
-
-        for (const task of tab) {
+        for (const tabElement of table) {
 
             htmlString += `
-            <li${task.done ? " style=\"text-decoration: line-through\"" : ""}>
-                 ${task.content}
-                 <button class="js-deleteTask">Usuń</button>
-                 <button class="js-doneTask">Wykonane?</button>
-            </li>
-            `;
+            <li ${tabElement.done ? "style=\"text-decoration: line-through\"" : ""}>
+                <button class="js-doneTask">Wykonane?</button>
+                ${tabElement.content}
+                <button class="js-deleteTask">Usuń</button>
+            </li>`;
         }
         document.querySelector(".js-taskList").innerHTML = htmlString;
-
-        deleteTasks(tab);
-        toggleDoneTaksButton(tab);
-    }
-
-    const placeNewTaskOnList = (tab) => {
-        const newTaskContent = document.querySelector(".js-newTask");
-        if (newTaskContent.value.trim() === "") return;
-        tab.push({ content: newTaskContent.value.trim(), });
-        newTaskContent.value = "";
-        render(tab);
+        deleteTasks(table);
+        toggleDoneTask(table);
     };
 
     const addNewTask = (table) => {
-        const onSubmitClick = (event) => {
-            event.preventDefault();
-            placeNewTaskOnList(table);
-        };
         const form = document.querySelector(".js-form");
-        form.addEventListener("submit", onSubmitClick);
+        form.addEventListener("submit", (event) => {
+            event.preventDefault();
+            const newTaskContent = document.querySelector(".js-newTask");
+            if (newTaskContent.value.trim() === "") return;
+            table.push({ content: newTaskContent.value.trim(), });
+            newTaskContent.value = "";
+            renderTasksList(table);
+        });
+    };
+
+    const toggleDoneTask = (table) => {
+        const doneButtons = document.querySelectorAll(".js-doneTask");
+        doneButtons.forEach((doneTask, index) => {
+            doneTask.addEventListener("click", () => {
+                table[index].done = table[index].done ? false : true;
+                renderTasksList(table);
+            });
+        });
+    };
+
+    const deleteTasks = (table) => {
+        const deleteButtons = document.querySelectorAll(".js-deleteTask");
+        deleteButtons.forEach((deleteTask, index) => {
+            deleteTask.addEventListener("click", () => {
+                table.splice(index, 1);
+                renderTasksList(table);
+            });
+        });
     }
 
     const init = () => {
-
-        const tasksList = [
-            { content: "Przeczytaj!", done: true, },
-            { content: "Ustaw bloczki", done: false, },
-        ];
-
-        render(tasksList);
-        addNewTask(tasksList);
-
+        const tasksTable = [];
+        addNewTask(tasksTable);
+        toggleDoneTask(tasksTable);
+        deleteTasks(tasksTable);
     };
 
     init();
 }
+
+)();
