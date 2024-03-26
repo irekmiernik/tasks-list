@@ -3,6 +3,36 @@ body {
     line-height: 1.5;
     font-size: 15px;
     padding: 20px;
-    max-width: 800px;
+    max-width: 1200px;
     margin: 0px auto;
+    background-color: #eee;
+    overflow-wrap: anywhere;
+}
+
+.h1,
+.h2 {
+    max-width: 1000px;
+}
+
+.h2 {
+    margin: 0;
+}
+
+.section {
+    background-color: #fff;
+    max-width: 1000px;
+    padding: 10px;
+    margin-bottom: 15px;
+}
+
+.form {
+    min-height: 50px;
+}
+
+.tasksListDiv {
+    margin-top: 30px;
+}
+
+.js-textDecoration {
+    text-decoration: line-through;
 }
