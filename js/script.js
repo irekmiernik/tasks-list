@@ -1,78 +1,86 @@
 (() => {
-    const updateDOM = (table) => {
-        const tasksListSection = document.querySelector(".js-tasksListSection");
-        document.querySelector(".js-tasksListDiv").remove();
-        const tasksListDiv = document.createElement("div");
-        tasksListDiv.setAttribute("class", "tasksListDiv js-tasksListDiv");
-        tasksListSection.appendChild(tasksListDiv);
+    const bindAddNewTaskButton = () => {
 
-        for (const tabElement of table) {
-            const listItem = document.createElement("div");
-            listItem.setAttribute("class", "flex flex--tasksList js-listItem");
-            tasksListDiv.appendChild(listItem);
+        let tasksTable = [];
 
-            const doneItem = document.createElement("button");
-            doneItem.setAttribute("class", "flex__item flex__item--button js-doneTask");
-            if (tabElement.done) doneItem.innerText = "✅"; else doneItem.innerText = "🟩";
-            listItem.append(doneItem);
+        const createTasksList = () => {
+            const createListItem = (ulElement, itemContent) => {
+                const liElement = document.createElement("li");
+                liElement.setAttribute("class", "section__flex section__flex--tasksList js-tasksListItem");
+                ulElement.appendChild(liElement);
 
-            const textItem = document.createElement("span");
-            textItem.setAttribute("class", "flex__item js-textItem");
-            if (tabElement.done) textItem.setAttribute("class", "flex__item js-textItem js-textDecoration");
-            textItem.innerText = `${tabElement.content}`;
-            listItem.append(textItem);
+                const buttonDoneNewItem = document.createElement("button");
+                buttonDoneNewItem.setAttribute("class", "section__flexItem section__flexItem--button js-doneTask");
+                buttonDoneNewItem.textContent = itemContent.done ? "✔" : "";
+                liElement.append(buttonDoneNewItem);
 
-            const deleteItem = document.createElement("button");
-            deleteItem.setAttribute("class", "flex__item flex__item--button js-deleteTask");
-            deleteItem.textContent = "❌";
-            listItem.appendChild(deleteItem);
-            tasksListDiv.appendChild(document.createElement("hr"));
+                const textNewItem = document.createElement("span");
+                textNewItem.setAttribute("class", "section__flexItem js-textTasksListItem");
+                if (itemContent.done) textNewItem.setAttribute("class", "section__flexItem section__taskDoneItem js-textTasksListItem");
+                textNewItem.innerText = `${itemContent.content}`;
+                liElement.append(textNewItem);
+
+                const buttonDeleteNewItem = document.createElement("button");
+                buttonDeleteNewItem.setAttribute("class", "section__flexItem section__flexItem--button js-deleteTask");
+                buttonDeleteNewItem.textContent = "🗑";
+                liElement.appendChild(buttonDeleteNewItem);
+            };
+
+            const tasksListSection = document.querySelector(".js-tasksListSection");
+            document.querySelector(".js-tasksList").remove();
+            const tasksList = document.createElement("ul");
+            tasksList.setAttribute("class", "section__tasksList js-tasksList");
+            tasksListSection.appendChild(tasksList);
+
+            for (const tabElement of tasksTable) createListItem(tasksList, tabElement);
+            console.log("tasksTable = ", tasksTable);
+
+            bindToggleDoneTaskButton();
+            bindDeleteTaskButton();
         };
-        deleteTasks(table);
-        toggleDoneTask(table);
-    };
 
-    const addNewTask = (table) => {
-        const form = document.querySelector(".js-form");
-        form.addEventListener("submit", (event) => {
+        const bindToggleDoneTaskButton = () => {
+            document.querySelectorAll(".js-doneTask").forEach((tasksList, tasksListIndex) => {
+                tasksList.addEventListener("click", () => {
+
+                    tasksTable = tasksTable.map((tableElement, tableElementIndex) => {
+                        if (tableElementIndex === tasksListIndex)
+                            tableElement = tableElement.done ? { ...tableElement, done: false, } : { ...tableElement, done: true, };
+                        return tableElement;
+                    });
+                    createTasksList();
+                    document.querySelector(".js-newTask").focus();
+                });
+            });
+        };
+
+        const bindDeleteTaskButton = () => {
+            const deleteButtons = document.querySelectorAll(".js-deleteTask");
+            deleteButtons.forEach((tasksList, tasksListIndex) => {
+                tasksList.addEventListener("click", () => {
+                    tasksTable = tasksTable.flatMap((tableElement, tableElementIndex) => {
+                        if (tableElementIndex === tasksListIndex) return [];
+                        return tableElement;
+                    })
+                    createTasksList();
+                    document.querySelector(".js-newTask").focus();
+                });
+            });
+        }
+
+        document.querySelector(".js-form").addEventListener("submit", (event) => {
             event.preventDefault();
-            const newTaskContent = document.querySelector(".js-newTask");
-            if (newTaskContent.value.trim() === "") return;
-            table.push({ content: newTaskContent.value.trim(), });
-            newTaskContent.value = "";
-            newTaskContent.focus();
-            updateDOM(table);
+            if (document.querySelector(".js-newTask").value.trim() !== "") {
+                tasksTable = [
+                    ...tasksTable,
+                    { content: document.querySelector(".js-newTask").value.trim(), done: false, }
+                ];
+                createTasksList();
+            };
+            document.querySelector(".js-newTask").value = "";
+            document.querySelector(".js-newTask").focus();
         });
     };
 
-    const toggleDoneTask = (table) => {
-        const doneButtons = document.querySelectorAll(".js-doneTask");
-        doneButtons.forEach((doneTask, index) => {
-            doneTask.addEventListener("click", () => {
-                table[index].done = table[index].done ? false : true;
-                document.querySelector(".js-newTask").focus();
-                updateDOM(table);
-            });
-        });
-    };
-
-    const deleteTasks = (table) => {
-        const deleteButtons = document.querySelectorAll(".js-deleteTask");
-        deleteButtons.forEach((deleteTask, index) => {
-            deleteTask.addEventListener("click", () => {
-                table.splice(index, 1);
-                document.querySelector(".js-newTask").focus();
-                updateDOM(table);
-            });
-        });
-    }
-
-    const init = () => {
-        const tasksTable = [];
-        addNewTask(tasksTable);
-        toggleDoneTask(tasksTable);
-        deleteTasks(tasksTable);
-    };
-
-    init();
+    bindAddNewTaskButton();
 })();
