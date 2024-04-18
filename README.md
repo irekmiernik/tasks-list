@@ -6,9 +6,9 @@ This website can be used for creating and managing the task lists. You can add n
 
 ## view
 
-![image] (images/ekran.png)
+![The tasks list image.](images/ekran.png)
 
-The tasks list image. The green button can be used to change the status of the task, but the red one to remove the task from list.
+The green button can be used to change the status of the task, but the red one to remove the task from list.
  
  ## Used technologies
 - HTML
