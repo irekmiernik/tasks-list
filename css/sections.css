@@ -1,0 +1,127 @@
+.section {
+    background-color: #fff;
+    max-width: 1000px;
+    min-height: 130px;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+}
+
+.sectionTasksList {
+    list-style-type: none;
+    margin: 0px;
+    padding-left: 20px;
+}
+
+.tasksListItemDone {
+    text-decoration: line-through;
+}
+
+.tasksListItemHidden {
+    display: none;
+}
+
+.sectionFlex {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+}
+
+.sectionFlex--header {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    border-bottom: 2px solid #aaa;
+}
+
+.sectionFlex--tasksList {
+    border-bottom: 1px solid #aaa;
+}
+
+@media (max-width: 380px) {
+    .sectionFlex {
+        display: flex;
+        flex-flow: column nowrap;
+        align-items: stretch;
+    }
+}
+
+@media (max-width: 380px) {
+    .sectionFlex--tasksList {
+        flex-flow: row nowrap;
+        align-items: center;
+    }
+}
+
+.sectionFlex__itemContent {
+    flex: 1 1 auto;
+    padding: 5px;
+    margin: 10px;
+}
+
+.sectionFlex__itemButton {
+    flex: 0 0 auto;
+    color: #fff;
+    background-color: hsl(180, 100%, 30%);
+    border-style: none;
+    margin: 10px;
+    padding: 6px;
+    transition: 1s;
+}
+
+.sectionFlex__itemButton:hover {
+    background-color: hsl(180, 100%, 40%);
+    transform: scale(1.1);
+}
+
+.sectionFlex--header .sectionFlex__itemButton {
+    flex: 0 0 auto;
+    color: hsl(180, 100%, 30%);
+    background-color: #fff;
+    border-style: none;
+    margin: 10px;
+    transition: 1s;
+}
+
+.sectionFlex--header .sectionFlex__itemButton:hover {
+    color: hsl(180, 100%, 50%);
+    transform: none;
+}
+
+.sectionFlex--header .sectionFlex__itemButton:disabled {
+    color: #aaa;
+}
+
+.sectionFlex__itemButton--done {
+    background-color: hsl(120, 100%, 30%);
+    border-style: none;
+    min-width: 27px;
+    min-height: 27px;
+    transition: 1s;
+}
+
+.sectionFlex__itemButton--done:hover {
+    background-color: hsl(120, 100%, 60%);
+    transform: none;
+}
+
+.sectionFlex__itemButton--done:disabled {
+    background-color: hsl(120, 100%, 80%);
+}
+
+
+.sectionFlex__itemButton--delete {
+    background-color: hsl(0, 100%, 60%);
+    border-style: none;
+    min-width: 27px;
+    min-height: 27px;
+    transition: 1s;
+}
+
+.sectionFlex__itemButton--delete:hover {
+    background-color: hsl(0, 100%, 70%);
+    transform: none;
+}
+
+.sectionFlex__itemButton--delete:disabled {
+    background-color: hsl(0, 100%, 80%);
+}

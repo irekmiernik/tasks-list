@@ -14,7 +14,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;1,400;1,700&display=swap"
         rel="stylesheet">
 
-    <link href="css/flex.css" rel="stylesheet">
+    <link href="css/sections.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
 
     <script defer src="js/script.js"></script>
@@ -27,24 +27,24 @@
     <h1 class="h1">Lista zadań</h1>
 
     <section class="section">
-        <h2 class="h2">Dodaj nowe zadanie</h2>
-        <hr>
+        <div class="sectionFlex sectionFlex--header">
+            <h2 class="sectionFlex__itemContent h2">Dodaj nowe zadanie</h2>
+        </div>
 
-        <form class="flex js-form">
-            <input class="flex__item js-newTask" placeholder="Co jest do zrobienia?" autofocus>
-            <button class="flex__item flex__item--button js-add_task">Dodaj zadanie</button>
+        <form class="sectionFlex js-form">
+            <input class="sectionFlex__itemContent js-newTask" placeholder="Co jest do zrobienia?" autofocus>
+            <button class="sectionFlex__itemButton js-add_task">Dodaj zadanie</button>
         </form>
     </section>
 
     <section class="section js-tasksListSection">
-        <h2 class="h2">Lista zadań</h2>
-        <hr>
 
-        <div class="tasksListDiv js-tasksListDiv">
-            <div class="flex flex--tasksList js-listItem"></div>
+        <div class="sectionFlex sectionFlex--header js-section__header">
+            <h2 class="sectionFlex__itemContent h2">Lista zadań</h2>
         </div>
-    </section>
 
+        <ul class="sectionTasksList js-tasksList"></ul>
+    </section>
 
 </body>
 
