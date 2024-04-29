@@ -1,116 +1,138 @@
 (() => {
     const addNewTaskButton = () => {
-        let tasksTable = [];
-        let hideDoneTasks = false;
+        const createHideAndAllDoneTasksButtons = () => {
+            if (!document.querySelector(".js-hideDoneTasksButton")) {
+                const hide = document.createElement("button");
+                hide.setAttribute("class", "sectionFlex__itemButton js-hideDoneTasksButton");
+                hide.textContent = "Ukryj ukończone";
+                document.querySelector(".js-section__header").appendChild(hide);
+                hideDoneTasksButton();
+            };
 
+            if (!document.querySelector(".js-allDoneTasksButton")) {
+                const allDoneTasksButton = document.createElement("button");
+                allDoneTasksButton.setAttribute("class", "sectionFlex__itemButton js-allDoneTasksButton");
+                allDoneTasksButton.textContent = "Ukończ wszystkie";
+                document.querySelector(".js-section__header").appendChild(allDoneTasksButton);
+                markAllDoneTasksButton();
+            } else document.querySelector(".js-allDoneTasksButton").removeAttribute("disabled");
+        };
+        const createTasksList = (newTaskContent) => {
+            const createListItem = (ulElement, itemContent) => {
+                const listItem = document.createElement("li");
+                listItem.setAttribute("class", "sectionFlex sectionFlex--tasksList js-li");
+                ulElement.appendChild(listItem);
+
+                const buttonDoneItem = document.createElement("button");
+                buttonDoneItem.setAttribute("class", "sectionFlex__itemButton sectionFlex__itemButton--done js-doneTask");
+                listItem.append(buttonDoneItem);
+
+                const textItem = document.createElement("span");
+                textItem.setAttribute("class", "sectionFlex__itemContent js-itemContent");
+                textItem.textContent = itemContent;
+                listItem.append(textItem);
+
+                const buttonDeleteItem = document.createElement("button");
+                buttonDeleteItem.setAttribute("class", "sectionFlex__itemButton sectionFlex__itemButton--delete js-deleteTask");
+                buttonDeleteItem.textContent = "🗑";
+                listItem.appendChild(buttonDeleteItem);
+            };
+            const tasksList = document.querySelector(".js-tasksList");
+            createListItem(tasksList, newTaskContent);
+            toggleDoneTaskButton();
+            deleteTaskButton();
+        };
         document.querySelector(".js-form").addEventListener("submit", (event) => {
             event.preventDefault();
-            if (document.querySelector(".js-newTask").value.trim() !== "") {
-                tasksTable = [
-                    ...tasksTable,
-                    { content: document.querySelector(".js-newTask").value.trim(), done: false, }
-                ];
-                render();
+            const newTaskValue = document.querySelector(".js-newTask");
+            if (newTaskValue.value.trim() !== "") {
+                createTasksList(newTaskValue.value.trim());
+                createHideAndAllDoneTasksButtons();
             };
             document.querySelector(".js-newTask").value = "";
             document.querySelector(".js-newTask").focus();
         });
-        const render = () => {
-            const createHideAndAllDoneTasksButtons = () => {
-                if (document.querySelector(".js-hideDoneTasksButton")) document.querySelector(".js-hideDoneTasksButton").remove();
-                if (document.querySelector(".js-allDoneTasksButton")) document.querySelector(".js-allDoneTasksButton").remove();
-
-                if (tasksTable.length > 0) {
-                    const hide = document.createElement("button");
-                    hide.setAttribute("class", "sectionFlex__itemButton js-hideDoneTasksButton");
-                    hide.textContent = hideDoneTasks ? "Pokaż ukończone" : "Ukryj ukończone";
-                    document.querySelector(".js-section__header").appendChild(hide);
-                    hideDoneTasksButton();
-
-                    const allDoneTasksButton = document.createElement("button");
-                    allDoneTasksButton.setAttribute("class", "sectionFlex__itemButton js-allDoneTasksButton");
-                    if (tasksTable.filter((tableElement,) => {
-                        if (!tableElement.done) return tableElement;
-                    }).length === 0) allDoneTasksButton.setAttribute("disabled", "");
-                    allDoneTasksButton.textContent = "Ukończ wszystkie";
-                    document.querySelector(".js-section__header").appendChild(allDoneTasksButton);
-                    markAllDoneTasksButton();
-                };
-            };
-            const createTasksList = () => {
-                const createListItem = (ulElement, itemContent) => {
-                    const listItem = document.createElement("li");
-                    let listItemAttribute = "sectionFlex sectionFlex--tasksList";
-                    if (hideDoneTasks && itemContent.done) listItemAttribute = "tasksListItemHidden";
-                    listItem.setAttribute("class", listItemAttribute);
-                    ulElement.appendChild(listItem);
-
-                    const buttonDoneItem = document.createElement("button");
-                    const buttonDoneItemAttribute = "sectionFlex__itemButton sectionFlex__itemButton--done js-doneTask";
-                    buttonDoneItem.setAttribute("class", buttonDoneItemAttribute);
-                    if (itemContent.done) buttonDoneItem.textContent = "✔";
-                    listItem.append(buttonDoneItem);
-
-                    const textItem = document.createElement("span");
-                    let textItemAttribute = "sectionFlex__itemContent";
-                    if (itemContent.done) textItemAttribute += " tasksListItemDone";
-                    textItem.setAttribute("class", textItemAttribute);
-                    textItem.innerText = `${itemContent.content}`;
-                    listItem.append(textItem);
-
-                    const buttonDeleteItem = document.createElement("button");
-                    const buttonDeleteItemAttribute = "sectionFlex__itemButton sectionFlex__itemButton--delete js-deleteTask";
-                    buttonDeleteItem.setAttribute("class", buttonDeleteItemAttribute);
-                    buttonDeleteItem.textContent = "🗑";
-                    listItem.appendChild(buttonDeleteItem);
-                };
-
-                const tasksListSection = document.querySelector(".js-tasksListSection");
-                document.querySelector(".js-tasksList").remove();
-                const tasksList = document.createElement("ul");
-                tasksList.setAttribute("class", "sectionTasksList js-tasksList");
-                tasksListSection.appendChild(tasksList);
-
-                for (const tabElement of tasksTable) { createListItem(tasksList, tabElement); }
-
-                toggleDoneTaskButton();
-                deleteTaskButton();
-            };
-            createHideAndAllDoneTasksButtons();
-            createTasksList();
+        const toggleAllDoneTasksButton = (listDoneTaskButtons) => {
+            let i = 0;
+            listDoneTaskButtons.forEach((element) => {
+                i += element.textContent === "✔" ? 1 : 0;
+            });
+            if (i === listDoneTaskButtons.length) document.querySelector(".js-allDoneTasksButton").setAttribute("disabled", "");
+            else document.querySelector(".js-allDoneTasksButton").removeAttribute("disabled");
         };
         const toggleDoneTaskButton = () => {
-            document.querySelectorAll(".js-doneTask").forEach((tasksList, tasksIndex) => {
-                tasksList.addEventListener("click", () => {
-                    tasksTable = [...tasksTable.slice(0, tasksIndex),
-                    { ...tasksTable[tasksIndex], done: !tasksTable[tasksIndex].done, },
-                    ...tasksTable.slice(tasksIndex + 1),];
-                    render();
+            const resetEventList = () => {
+                document.querySelectorAll(".js-doneTask").forEach((task) => {
+                    const newButt = document.createElement("button");
+                    newButt.setAttribute("class", task.getAttribute("class"));
+                    newButt.textContent = task.textContent;
+                    task.replaceWith(newButt);
+                });
+            };
+            resetEventList();
+
+            const tasksListContent = document.querySelectorAll(".js-itemContent");
+            document.querySelectorAll(".js-doneTask").forEach((task, index) => {
+                task.addEventListener("click", () => {
+                    if (task.textContent === "✔") {
+                        task.textContent = "";
+                        tasksListContent[index].classList.remove("itemContentDone");
+                    } else {
+                        task.textContent = "✔";
+                        tasksListContent[index].classList.add("itemContentDone");
+                    };
+                    toggleAllDoneTasksButton(document.querySelectorAll(".js-doneTask"));
                     document.querySelector(".js-newTask").focus();
                 });
             });
         };
         const deleteTaskButton = () => {
-            document.querySelectorAll(".js-deleteTask").forEach((removeButton, taskIndex) => {
-                removeButton.addEventListener("click", () => {
-                    tasksTable = [...tasksTable.slice(0, taskIndex), ...tasksTable.slice(taskIndex + 1)];
-                    render();
+            const tasksList = document.querySelectorAll(".js-li");
+            document.querySelectorAll(".js-deleteTask").forEach((task, index) => {
+                task.addEventListener("click", () => {
+                    tasksList[index].remove();
+                    if (document.querySelectorAll(".js-li").length === 0) {
+                        if (document.querySelector(".js-hideDoneTasksButton")) {
+                            document.querySelector(".js-hideDoneTasksButton").remove();
+                        };
+                        if (document.querySelector(".js-allDoneTasksButton")) {
+                            document.querySelector(".js-allDoneTasksButton").remove();
+                        };
+                    };
+                    toggleAllDoneTasksButton(document.querySelectorAll(".js-doneTask"));
                     document.querySelector(".js-newTask").focus();
                 });
             });
         };
         const hideDoneTasksButton = () => {
             document.querySelector(".js-hideDoneTasksButton").addEventListener("click", () => {
-                hideDoneTasks = hideDoneTasks ? false : true;
-                render();
+                document.querySelector(".js-hideDoneTasksButton").textContent =
+                    (document.querySelector(".js-hideDoneTasksButton").textContent === "Ukryj ukończone")
+                        ? "Pokaż ukończone" : "Ukryj ukończone";
+
+                if (document.querySelector(".js-hideDoneTasksButton").textContent === "Pokaż ukończone") {
+                    document.querySelectorAll(".js-doneTask").forEach((task, index) => {
+                        if (task.textContent === "✔") {
+                            document.querySelectorAll(".js-li")[index].setAttribute("class", "tasksListItemHidden js-li");
+                        };
+                    });
+                } else {
+                    document.querySelectorAll(".js-li").forEach((task) => {
+                        task.setAttribute("class", "sectionFlex sectionFlex--tasksList js-li");
+                    });
+                };
                 document.querySelector(".js-newTask").focus();
             });
         };
         const markAllDoneTasksButton = () => {
             document.querySelector(".js-allDoneTasksButton").addEventListener("click", () => {
-                tasksTable = tasksTable.map((tableElement,) => tableElement = { ...tableElement, done: true, });
-                render();
-                document.querySelector(".js-newTask").focus();
+                const listItemContent = document.querySelectorAll(".js-itemContent");
+                document.querySelectorAll(".js-doneTask").forEach((task, index) => {
+                    task.textContent = "✔";
+                    listItemContent[index].classList.add("itemContentDone");
+                    document.querySelector(".js-newTask").focus();
+                });
+                document.querySelector(".js-allDoneTasksButton").setAttribute("disabled", "");
             });
         };
     };
